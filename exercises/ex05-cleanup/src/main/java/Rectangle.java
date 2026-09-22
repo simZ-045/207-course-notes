@@ -10,20 +10,16 @@ public class Rectangle {
     public double area(){
         return width*height;
     }
-
     /**
      * scales the rectangle
-     * @param factor
+     * @param factor a double value that represents how much the rectangle is going to be scaled by
      */
     public void scale(double factor) {
-      width = width * factor;
-      height = height * factor;
+      width *= factor;
+      height *= factor;
     }
 
     public boolean isLargerThan(Rectangle other){
-        if(area() > other.area())
-            return true;
-        else
-            return false;
+        return area() > other.area();
     }
 }
