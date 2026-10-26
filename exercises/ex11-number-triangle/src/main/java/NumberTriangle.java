@@ -109,7 +109,14 @@ public class NumberTriangle {
     //       value of wherever you ended up. An empty path means "stay here".
     //       Hint: String#charAt(int) and String#length() are all you need for the
     //       iterative version; a recursive version can use String#substring(1).
-    return 0;
+    if (path.isEmpty()) {
+      return root;
+    } else if (path.charAt(0) == 'l') {
+      return this.left.retrieve(path.substring(1));
+    }
+    else {
+      return this.right.retrieve(path.substring(1));
+    }
   }
 
   /**
@@ -167,9 +174,7 @@ public class NumberTriangle {
     // of the "APIs, JSON, and Files" chapter.
     BufferedReader br = Files.newBufferedReader(Path.of(fname));
 
-    // TODO: define any variables that you want to use to keep track of things
-    //       between iterations of the loop below (for example, the row of
-    //       NumberTriangle objects that you built on the previous iteration).
+    NumberTriangle[] lastRow = null;
 
     // We need to return the top of the NumberTriangle, so here is a variable for it.
     NumberTriangle top = null;
@@ -180,13 +185,22 @@ public class NumberTriangle {
       // Remove this line when you are done; it is here so that the starter code
       // prints the contents of the file when you run it.
       System.out.println(line);
-
-      // TODO: process the line. Splitting it on spaces gives you the numbers in
-      //       this row; make a NumberTriangle for each one, then wire this row up
-      //       as the children of the previous row. Remember the aliasing: the
-      //       right child of one node is the left child of the next node over.
+      String[] lineContents = line.split(" ");
+      NumberTriangle[] currRow = new NumberTriangle[lineContents.length];
+      for (int i = 0; i < lineContents.length; i++) {
+        currRow[i] = new NumberTriangle(Integer.parseInt(lineContents[i]));
+      }
+      if (lastRow == null) {
+        top = currRow[0];
+      } else {
+        for (int i = 0; i < lastRow.length; i++) {
+          lastRow[i].setLeft(currRow[i]);
+          lastRow[i].setRight(currRow[i + 1]);
+        }
+      }
 
       // read the next line
+      lastRow = currRow;
       line = br.readLine();
     }
     br.close();
@@ -200,7 +214,7 @@ public class NumberTriangle {
    * @throws IOException if the file cannot be read
    */
   public static void main(String[] args) throws IOException {
-    NumberTriangle mt = NumberTriangle.loadTriangle("input_tree.txt");
+    NumberTriangle mt = NumberTriangle.loadTriangle("exercises/ex11-number-triangle/input_tree.txt");
     System.out.println("Root of the triangle: " + mt.getRoot());
   }
 }
