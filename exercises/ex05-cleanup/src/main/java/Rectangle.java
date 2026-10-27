@@ -10,6 +10,7 @@ public class Rectangle {
     public double area(){
         return width*height;
     }
+
     /**
      * scales the rectangle
      * @param factor a double value that represents how much the rectangle is going to be scaled by
