@@ -32,6 +32,7 @@ class Car{
  + maxSpeed() : int
 }
 class ElectricCar{
+ - batteryLevel : int
  + ElectricCar (make : String)
  + maxSpeed() : int
  + charge() : void

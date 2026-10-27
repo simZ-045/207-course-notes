@@ -27,21 +27,17 @@ abstract class Item {
   + getCatalogueNumber() : String
 }
 
-' TODO: add boxes for Book and DVD. What differs between them — a whole class,
-'       or just the value of a loan-period field?
 class Book {
  + loan-period : double = 3
  + borrowable : boolean = True
-
+ + loaned : boolean
 }
 class DVD {
  + loan-period : double = 1
  + borrowable : boolean = True
+ + loaned : boolean
 }
 
-' TODO: reference-only items cannot be borrowed at all. Decide how to say that
-'       in the diagram: a subclass, or an interface (e.g. "Borrowable") that
-'       only some items realize?
 interface Borrowable {
    + borrowable : boolean
 }
@@ -49,9 +45,6 @@ interface Borrowable {
 class ReferenceOnly {
   + borrowable : boolean = False
 }
-
-' TODO: add Member and Librarian. What do they have in common? Add the common
-'       supertype if you think one is warranted.
 
 abstract class Users {
   + userID : int
@@ -66,10 +59,6 @@ class Librarian {
 }
 
 
-' TODO: add whatever represents a hold, and connect it to the classes that need
-'       to know about it.
-
-' TODO: add the arrows between all of your types.
 Borrowable <|.. ReferenceOnly
 Borrowable <|.. Book
 Borrowable <|.. DVD
@@ -77,4 +66,55 @@ Users <|-- Member
 Users <|-- Librarian
 Item <|-- Book
 Item <|-- DVD
+Item <|-- ReferenceOnly
 @enduml
+question 2
+A member places a hold on an item that is currently on loan.
+Member use placeHold method on a Item (Book or DVD) that has a loaned value of True
+
+which class should be responsible for knowing whether an item is currently on loan?
+Either:
+put it in item class and have it inherited to book and DVD
+-issue - all items must then have the loaned boolean, inlcluding nonBorrowable ones
+put it in book and DVD
+- issue - Very repetitive
+
+Question 3
+As a student, I want to reserve an available study room for a particular time so that my group has a place to meet.
+
+Use case: reserve an available study room
+
+primary actor: the Student that wants to reserve the study room
+
+preconditions:
+The student is signed in
+The student has already selected a room, date, and time
+The room has no reservations currently
+
+trigger:
+The user asks the system to reserve the selected room
+
+sucess outcomes:
+The request is recorded as complete, reserving the room so that other students can not book it
+
+main success scenario:
+The student books a room on the system
+The system checks if the room has been reserved already
+The system records that the student has booked this room
+The system notifies the student that the room is booked by them successfully
+The system notifies other students that the room is booked
+
+extension
+2a The room was booked already by another student
+i The system explains that the room was already booked
+ii The system displays alternative available rooms or time slots, prompting the student to select an alternative
+iii The Student may select to the alternative or quit, causing either the use case to continue with new input or ending
+the use case
+
+1a
+i The student tries to book an invalid non-existing room
+ii The system explains that no such room exist, and prompts the user to select an alternative room
+iii The Student may select to the alternative or quit, causing either the use case to continue with new input or ending
+the use case
+What the user observes: An error message and a request to select an alternative room
+State change: Depending on the user's choice, either a new room is booked or no state change happens.
